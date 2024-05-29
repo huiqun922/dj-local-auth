@@ -11,11 +11,35 @@ npm install dj-local-auth
 ## Usage
 
 ```js
-import { multiply } from 'dj-local-auth';
+import { authenticate } from 'dj-local-auth';
 
-// ...
+// const options = {}; options can empty
+const options = {
+    biometricsSecurityLevel: "weak", //Only Android, weak or strong
+    promptMessage: "Title", //A message that is shown alongside the TouchID or FaceID prompt.
+    cancelLabel: "Cancel Label", //Allows to customize the default Cancel label shown.
+    disableDeviceFallback: true; //Allows to customize the default Cancel label shown.
+    requireConfirmation: true; //Only Android,Sets a hint to the system for whether to require user confirmation after authentication.
+};
+// Result Type
+// {
+//     success: bool,
+//     error: string.
+// }
+ authenticate(options).then((r) => {
+            setResult(r.success.toString());
+          });
+```
 
-const result = await multiply(3, 7);
+## Permission
+#### iOS
+```
+NSFaceIDUsageDescription
+```
+#### Android
+```
+<uses-permission android:name="android.permission.USE_BIOMETRIC" />
+<uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
 
 ## Contributing
