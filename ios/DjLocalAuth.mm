@@ -3,6 +3,9 @@
 @interface RCT_EXTERN_MODULE(DjLocalAuth, NSObject)
 
 
+RCT_EXTERN_METHOD(supportAuthenticationType:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 RCT_EXTERN_METHOD(authenticate:(NSDictionary *)options
                  withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);

@@ -11,7 +11,16 @@ npm install dj-local-auth
 ## Usage
 
 ```js
-import { authenticate } from 'dj-local-auth';
+import { authenticate, supportAuthenticationType } from 'dj-local-auth';
+
+  React.useEffect(() => {
+    supportAuthenticationType().then((r) => {
+      r?.forEach((t) => {
+        console.log(t.toString());
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 // const options = {}; options can empty
 const options = {

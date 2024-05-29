@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import type {
+  AuthenticationType,
   LocalAuthenticationOptions,
   LocalAuthenticationResult,
 } from './LocalAuth';
@@ -21,12 +22,18 @@ const DjLocalAuth = NativeModules.DjLocalAuth
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return DjLocalAuth.multiply(a, b);
-}
-
 export function authenticate(
   options: LocalAuthenticationOptions
 ): Promise<LocalAuthenticationResult> {
   return DjLocalAuth.authenticate(options);
 }
+
+export function supportAuthenticationType(): Promise<AuthenticationType[]> {
+  return DjLocalAuth.supportAuthenticationType();
+}
+
+export type {
+  AuthenticationType,
+  LocalAuthenticationOptions,
+  LocalAuthenticationResult,
+};

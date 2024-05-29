@@ -4,6 +4,20 @@ import LocalAuthentication
 class DjLocalAuth: NSObject {
 
     
+    @objc(supportAuthenticationType:withRejecter:)
+    func supportAuthenticationType(resolve:@escaping RCTPromiseResolveBlock, reject:RCTPromiseRejectBlock) -> Void {
+        var supportedAuthenticationTypes: [Int] = []
+        
+        if isTouchIdDevice() {
+            supportedAuthenticationTypes.append(1)
+        }
+        
+        if isFaceIdDevice() {
+            supportedAuthenticationTypes.append(2)
+        }
+        resolve(supportedAuthenticationTypes);
+    }
+    
     @objc(authenticate:withResolver:withRejecter:)
     func authenticate(options: NSDictionary, resolve:@escaping RCTPromiseResolveBlock, reject:RCTPromiseRejectBlock) -> Void {
         var warningMessage: String?

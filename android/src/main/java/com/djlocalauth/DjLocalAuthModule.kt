@@ -17,12 +17,16 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import kotlinx.coroutines.*
 import java.util.HashMap
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
+private const val AUTHENTICATION_TYPE_FINGERPRINT = 1
+private const val AUTHENTICATION_TYPE_FACIAL_RECOGNITION = 2
+private const val AUTHENTICATION_TYPE_IRIS = 3
 private const val DEVICE_CREDENTIAL_FALLBACK_CODE = 6
 
 
@@ -132,6 +136,25 @@ class DjLocalAuthModule(reactContext: ReactApplicationContext) :
       promise = null
       authOptions = null
     }
+  }
+
+  @ReactMethod
+  fun supportAuthenticationType(promise: Promise){
+
+    val results = WritableNativeArray()
+    if (canAuthenticateUsingWeakBiometrics() == BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE) {
+      promise.resolve(results);
+      return
+    }
+    // note(cedric): replace hardcoded system feature strings with constants from
+    // PackageManager when dropping support for Android SDK 28
+    results.apply {
+      addIf(hasSystemFeature("android.hardware.fingerprint"), AUTHENTICATION_TYPE_FINGERPRINT)
+      addIf(hasSystemFeature("android.hardware.biometrics.face"), AUTHENTICATION_TYPE_FACIAL_RECOGNITION)
+      addIf(hasSystemFeature("android.hardware.biometrics.iris"), AUTHENTICATION_TYPE_IRIS)
+      addIf(hasSystemFeature("com.samsung.android.bio.face"), AUTHENTICATION_TYPE_FACIAL_RECOGNITION)
+    }
+    promise.resolve(results);
   }
   @ReactMethod
   fun authenticate(options: ReadableMap, promise: Promise) {
@@ -306,5 +329,10 @@ class DjLocalAuthModule(reactContext: ReactApplicationContext) :
       putString("warning", it)
     }
   }
+}
 
+fun WritableNativeArray.addIf(condition: Boolean, valueToAdd: Int) {
+  if (condition) {
+    pushInt(valueToAdd)
+  }
 }
